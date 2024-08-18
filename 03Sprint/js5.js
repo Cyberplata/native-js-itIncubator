@@ -1,24 +1,39 @@
 // Lexical environment, closure, recursion
 
-// let car = "bmw";
+/*I.Lexical environment ->
+В JavaScript у каждой выполняемой функции, блока кода {...} и скрипта есть связанный с ними внутренний (скрытый) объект, называемый лексическим окружением LexicalEnvironment.
 
+Объект лексического окружения состоит из двух частей:
+    a)Environment Record – объект, в котором как свойства хранятся все локальные переменные (а также некоторая другая информация, такая как значение this).
+    b)Ссылка на внешнее лексическое окружение – то есть то, которое соответствует коду снаружи (снаружи от текущих фигурных скобок).
+*/
+/*II. hoisting ->
+Поднятие или hoisting — - это механизм в JavaScript, в котором переменные и объявления функций, передвигаются вверх своей области видимости перед тем, как код будет выполнен.
+*/
+
+
+//-1-------------------------------------------------------------------------------------------
+// let car = "bmw";
+//
 // function startEngine() {
 //   // const car = "kia";
-
+//
 //   return () => console.log(`Start ${car}`);
 // }
-
+//
 // const foo = startEngine();
-
+//
 // car = "audi";
-
+//
 // foo();
 
+
+//-2------------------------------------------------------------------------------------------
 // const globalLE = {
 // 	environmentRecords: {
-
+//
 // 	},
-
+//
 // 	outer: null
 // }
 
@@ -29,38 +44,49 @@
 // baz();
 
 // console.log(a);
-// // bar();
+// bar();
 // function foo() {
 //   console.log("foo");
 // }
-
+//
 // const bar = function () {
 //   // globalLE {foo: func, bar: func} -> null
 //   console.log("bar");
 // };
-
-// // bar();
-
+//
+// bar();
+//
 // const baz = () => {
 //   console.log("baz");
 // };
-
-// // bar();
+//
+// bar();
 
 // var a = "str"; // globalLE {foo: func, a: 'str'} -> null
 // let b = 10;
 // const c = 20;
+//
+// console.log(a);
 
-// // console.log(a);
 
+//-3-----------------------------------------------------------------------------------------
+//-Примеры, что заносится в лексическое окружение и с каким значением
 // globalLE {} -> null
 
 // let car = 'bmw' // globalLE {car: 'bmw'} -> null
-
+//
 // car = 'kia'// globalLE {car: 'kia'} -> null
 
+// {
+//     // le - любые фигурные скобки создают лексическое окружение
+// }
+
+// const obj = {
+//     // здесь не создаётся le
+// }
+
 // while() {
-// 	// whileLE {}
+// 	// whileLE {} - здесь создаётся свой le, сам while никак не отображается в globalLE
 
 // 	const car = 'audi'
 // }
@@ -68,46 +94,80 @@
 // const arr = []// globalLE {car: 'kia', arr: []} -> null
 // const obj = {}// globalLE {car: 'kia', arr: [], obj: {}} -> null
 
-// globalLE {startEngine: func, car: undefined} -> null
 
+//-3.1------------------------------------------------------------------------------------------
+// // globalLE {startEngine: func, car: undefined} -> null
+// startEngine(); // 1.Когда вызывается функция. создаётся своё le
 // var car = "bmw"; // globalLE {startEngine: func, car: 'bmw'} -> null
-
+//
 // function startEngine() {
-//   // startEngineLE {} -> globalLE
-
-//   // const car = "kia";
-//   // console.log(`Start ${car}`);
-
-//   return () => console.log(`Start ${car}`);
+//     // startEngineLE {} -> globalLE // 2.И ссылка идёт на глобальное лексическое окружение
+//
+//     // const car = "kia";
+//     console.log(`Start ${car}`);
+//
+//     // return () => console.log(`Start ${car}`); // 3.При выполнении console.log он идёт сначала в startEngineLE {}, там он не находит переменную car дальше по ссылке переходит в globalLE и там car: undefined. Поэтому в 1ом случае получили "Start undefined". А уже во 2ом случае "Start bmw"
 // }
-
+//
 // const foo = startEngine(); // globalLE {startEngine: func, car: 'bmw', foo: func} -> null
-
+//
 // car = "audi"; // globalLE {startEngine: func, car: 'audi', foo: func} -> null
+//
+// // foo();
 
-// foo();
 
+//-3.2--------------------------------------------------------------------------------------------
+// Создаётся глобальное le (1) ->
+// дальше записывается в globalLE car: 'bmw' (2) ->
+// дальше создаём новый ключа foo: func - но это записалась ссылка на функцию (5) ->
+// () => console.log(`Start ${car}`) что равно "Start bmw" (4.1) ->
+// дальше мы переписываем значение в globalLE car: 'audi' (6)
+
+// // globalLE {startEngine: func, car: undefined} -> null //(1)
+// var car = "bmw"; // globalLE {startEngine: func, car: 'bmw'} -> null //(2)
+//
+// function startEngine() {
+//   // startEngineLE {} -> globalLE //(3)
+//
+//   // const car = "kia";
+//   console.log(`Start ${car}`); //(4)
+//
+//   return () => console.log(`Start ${car}`); //(4.1)
+// }
+//
+// const foo = startEngine(); // globalLE {startEngine: func, car: 'bmw', foo: func} -> null //(5)
+//
+// car = "audi"; // globalLE {startEngine: func, car: 'audi', foo: func} -> null //(6)
+//
+// foo(); //(7)
+
+
+//-3.3--------------------------------------------------------------------------------------------
 // globalLE {} -> null
 
-// let car = "bmw"; // globalLE {} -> null
+let car = "bmw"; // globalLE {} -> null
 
-// const startEngine = () => {
-//   // globalLE {car: 'bmw', startEngine: func} -> null
-//   // {} -> globalLE
-//   // car = "audi";
-//   console.log(`Start ${car}`);
-// };
+const startEngine = () => {
+    // globalLE {car: 'bmw', startEngine: func} -> null
+    // startEngineLE{} -> globalLE
+    // car = "audi";
+    console.log(`Start ${car}`);
+};
 
-// car = "kia"; // globalLE {car: 'kia', startEngine: func} -> null
+car = "kia"; // globalLE {car: 'kia', startEngine: func} -> null
 
-// startEngine();
+startEngine(); // Объект лексического окружения startEngineLE создаётся только когда вызывается функция startEngineLE{} -> globalLE, но ссылка всегда будет {} -> globalLE
 
+// Замыкание - это способность функции запомнить своё внешнее лексическое окружение (то есть это наша ссылка на LE, выше в примерах {} -> globalLE)
+// () => {} // это тоже пример замыкания
+
+//-3.4--------------------------------------------------------------------------------------------
 // const App = () => {
 // 	const foo = () => {} // appLE {foo: func}
 // 	foo(10)
 // 	<Button bar={foo} />
 // }
-
+//
 // const Button = ({bar}) => {
 // 	// buttonLE {bar: func}
 // 	bar(20)
@@ -176,8 +236,8 @@
 // globalLE {j: 1}
 
 // let j = 1;
-for (var j = 1; j < 50; j++) {
-  // {j: 1}
-  // {j: 2}
-  setTimeout(() => console.log(j), 1000);
-}
+// for (var j = 1; j < 50; j++) {
+//   // {j: 1}
+//   // {j: 2}
+//   setTimeout(() => console.log(j), 1000);
+// }
