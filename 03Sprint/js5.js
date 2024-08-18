@@ -145,21 +145,22 @@
 //-3.3--------------------------------------------------------------------------------------------
 // globalLE {} -> null
 
-let car = "bmw"; // globalLE {} -> null
-
-const startEngine = () => {
-    // globalLE {car: 'bmw', startEngine: func} -> null
-    // startEngineLE{} -> globalLE
-    // car = "audi";
-    console.log(`Start ${car}`);
-};
-
-car = "kia"; // globalLE {car: 'kia', startEngine: func} -> null
-
-startEngine(); // Объект лексического окружения startEngineLE создаётся только когда вызывается функция startEngineLE{} -> globalLE, но ссылка всегда будет {} -> globalLE
+// let car = "bmw"; // globalLE {} -> null
+//
+// const startEngine = () => {
+//     // globalLE {car: 'bmw', startEngine: func} -> null
+//     // startEngineLE{} -> globalLE
+//     // car = "audi";
+//     console.log(`Start ${car}`);
+// };
+//
+// car = "kia"; // globalLE {car: 'kia', startEngine: func} -> null
+//
+// startEngine(); // Объект лексического окружения startEngineLE создаётся только когда вызывается функция startEngineLE{} -> globalLE, но ссылка всегда будет {} -> globalLE
 
 // Замыкание - это способность функции запомнить своё внешнее лексическое окружение (то есть это наша ссылка на LE, выше в примерах {} -> globalLE)
 // () => {} // это тоже пример замыкания
+
 
 //-3.4--------------------------------------------------------------------------------------------
 // const App = () => {
@@ -173,16 +174,62 @@ startEngine(); // Объект лексического окружения start
 // 	bar(20)
 // }
 
-// ---------------------------
 
+//-3.5-Пример с 1, 2, 3------------------------------------------
+// // globalLE {} -> null
+// const counterCreator = () => {
+//     // counterCreatorLE {} -> globalLE
+//     let count = 0; // counterCreatorLE {count: 0} -> globalLE (B)
+//
+//     // I вариант записи функции и return
+//     const foo = () => {
+//         console.log(++count)
+//     }
+//     return foo;
+//
+//     // // II вариант записи функции и return
+//     // return () => {
+//     //     // {} -> counterCreatorLE // запомнит ссылку на объект counterCreatorLE {} (A)
+//     //     console.log(++count);
+//     // };
+// };
+//
+// const counter = counterCreator(); // globalLE {counter: func} -> null
+// // На каждый вызов создаётся свой объект LE (A) {} -> counterCreatorLE, но после отработки этот объект удаляется -> counterCreatorLE, а вот объект (B) не удаляется, так как есть ссылка на этот объект -> counterCreatorLE
+// counter(); //1
+// counter(); //2
+// counter(); //3
+
+
+//-3.6-Пример с 1, 1, 1---------------------------------------------------
 // globalLE {} -> null
-// let count = 0;
+const counterCreator = () => {
+    // counterCreatorLE {} -> globalLE
+    let count = 0; // counterCreatorLE {count: 0} -> globalLE (B)
 
+    return () => {
+        // {} -> counterCreatorLE // запомнит ссылку на объект counterCreatorLE {} (A)
+        let count = 0;
+        console.log(++count);
+    };
+};
+
+const counter = counterCreator(); // globalLE {counter: func} -> null
+counter(); //1
+counter(); //1
+counter(); //1
+
+
+
+//-3.7-------------------------------------------------------------------------------------------
+// // globalLE {} -> null
+// let count = 0;
+//
 // const counterCreator = () => {
 //   // counterCreatorLE1 {count} -> globalLE
 //   // counterCreatorLE2 {count} -> globalLE
 //   let count = 0;
-
+//
 //   return () => {
 //     // {} -> counterCreatorLE1
 //     // {} -> counterCreatorLE2
@@ -190,16 +237,16 @@ startEngine(); // Объект лексического окружения start
 //     console.log(++count);
 //   };
 // };
-
+//
 // const counter1 = counterCreator(); // globalLE {counter: func} -> null
 // const counter2 = counterCreator(); // globalLE {counter: func} -> null
-
+//
 // console.log(counter1 === counter2);
-
+//
 // counter1();
 // counter1();
 // counter1();
-
+//
 // counter2();
 // counter2();
 // counter2();
