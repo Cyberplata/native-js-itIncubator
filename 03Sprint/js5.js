@@ -240,51 +240,59 @@
 // counterCreator(); // globalLE {counter: func} -> null
 
 
-//-3.8-Пример с 2-я counter1 и counter2 и разными count: начиная с локального counterCreatorLE1 {} -> globalLE (ответ: 1,2,3 1,2,3).
+//-3.8-Пример с 2-я counter1 и counter2 и разными count:
+// Начиная с локального counterCreatorLE1 {} -> globalLE (ответ: 1,2,3 1,2,3).
 // Дальше, когда let count = 0; внутри return (ответ: 1,1,1 1,1,1).
-// и последний момент когда на глобальном уровне let count = 0; (ответ: 1,2,3 4,5,6).
+// И последний момент когда на глобальном уровне let count = 0; (ответ: 1,2,3 4,5,6).
 // globalLE {} -> null
-let count = 0;
+// let count = 0;
+//
+// const counterCreator = () => {
+//   // counterCreatorLE1 {count} -> globalLE
+//   // counterCreatorLE2 {count} -> globalLE
+//   let count = 0;
+//
+//   return () => {
+//     // {} -> counterCreatorLE1
+//     // {} -> counterCreatorLE2
+//     // let count = 0;
+//     console.log(++count);
+//   };
+// };
+//
+// const counter1 = counterCreator(); // globalLE {counter: func} -> null
+// const counter2 = counterCreator(); // globalLE {counter: func} -> null
+//
+// console.log(counter1 === counter2);
+//
+// counter1();
+// counter1();
+// counter1();
+// console.log('--------------------------------------')
+// counter2();
+// counter2();
+// counter2();
 
-const counterCreator = () => {
-  // counterCreatorLE1 {count} -> globalLE
-  // counterCreatorLE2 {count} -> globalLE
-  let count = 0;
 
-  return () => {
-    // {} -> counterCreatorLE1
-    // {} -> counterCreatorLE2
-    // let count = 0;
-    console.log(++count);
-  };
-};
+//-4.-Рекурсия-----------------------------------------------------------------
+// Обязательно должно быть 2 правила у рекурсии: это выход из неё и шаг
 
-const counter1 = counterCreator(); // globalLE {counter: func} -> null
-const counter2 = counterCreator(); // globalLE {counter: func} -> null
-
-console.log(counter1 === counter2);
-
-counter1();
-counter1();
-counter1();
-console.log('--------------------------------------')
-counter2();
-counter2();
-counter2();
-
-// ---------------------------
-
+//--4.1.-Пример с возведением в степень----------------------------------------
+// Вызваться функция pow может внутри себя, потому что у неё есть ссылка на внешнее LE,
+// а в globalLE {pow: func} -> null она есть
 // 2(4) --> 2 * 2(3) --> 2 * 2 * 2(2) --> 2 * 2 * 2 * 2(1)
 
-// const pow = (x, n) => {
-//   if (n === 1) {
-//     return x;
-//   } else {
-//     return x * pow(x, n - 1);
-//   }
-// };
+// globalLE {} -> null
+const pow = (x, n) => {
+    // {x, n} -> globalLE
+    if (n === 1) { // условие выхода из рекурсии
+        return x;
+    } else {
+        return x * pow(x, n - 1); // шаг рекурсии -> n - 1
+    }
+};
 
-// console.log(pow(2, 8000));
+console.log(pow(2, 8000));
 
 // 5! --> 5 * 4! --> 5 * 4 * 3! --> 5 * 4 * 3 * 2! --> 5 * 4 * 3 * 2 * 1!
 
