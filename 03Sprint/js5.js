@@ -283,31 +283,33 @@
 // 2(4) --> 2 * 2(3) --> 2 * 2 * 2(2) --> 2 * 2 * 2 * 2(1)
 
 // globalLE {} -> null
-const pow = (x, n) => {
-    // {x, n} -> globalLE
-    if (n === 1) { // условие выхода из рекурсии
-        return x;
+// const pow = (x, n) => {
+//     // {x, n} -> globalLE
+//     if (n === 1) { // условие выхода из рекурсии
+//         return x;
+//     } else {
+//         return x * pow(x, n - 1); // шаг рекурсии -> n - 1
+//     }
+// };
+//
+// console.log(pow(2, 8000));
+
+
+//--4.2.-Пример с факториалом----------------------------------------
+// 5! --> 5 * 4! --> 5 * 4 * 3! --> 5 * 4 * 3 * 2! --> 5 * 4 * 3 * 2 * 1!
+
+let count = 0; // сделали для проверки ошибки добавили count
+
+const factorial = (n) => {
+    console.log(++count); // RangeError: Maximum call stack size exceeded
+    if (n === 1) {
+        return n;
     } else {
-        return x * pow(x, n - 1); // шаг рекурсии -> n - 1
+        return n * factorial(n - 1);
     }
 };
 
-console.log(pow(2, 8000));
-
-// 5! --> 5 * 4! --> 5 * 4 * 3! --> 5 * 4 * 3 * 2! --> 5 * 4 * 3 * 2 * 1!
-
-// let count = 0;
-
-// const factorial = (n) => {
-//   console.log(++count);
-//   if (n === 1) {
-//     return n;
-//   } else {
-//     return n * factorial(n - 1);
-//   }
-// };
-
-// console.log(factorial(8000));
+console.log(factorial(8000));
 
 // globalLE {j: 1}
 
