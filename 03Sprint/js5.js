@@ -202,26 +202,45 @@
 
 
 //-3.6-Пример с 1, 1, 1---------------------------------------------------
+// // globalLE {} -> null
+// const counterCreator = () => {
+//     // counterCreatorLE {} -> globalLE
+//     let count = 0; // counterCreatorLE {count: 0} -> globalLE (B)
+//
+//     return () => {
+//         // {} -> counterCreatorLE // запомнит ссылку на объект counterCreatorLE {} (A)
+//         let count = 0;
+//         console.log(++count);
+//     };
+// };
+//
+// const counter = counterCreator(); // globalLE {counter: func} -> null
+// counter(); //1
+// counter(); //1
+// counter(); //1
+
+
+//-3.7-Пример без записи в переменную counter---------------------------------------------------
+// Получается, мы вызвали функцию counterCreator() у нас отработала функция, но мы никуда не сохранили-записали,
+// что у нас идёт после return. Так что у нас удаляется сама функция и сама ссылка -> counterCreatorLE.
+// А точнее даже нигде не записывается.
 // globalLE {} -> null
 const counterCreator = () => {
     // counterCreatorLE {} -> globalLE
-    let count = 0; // counterCreatorLE {count: 0} -> globalLE (B)
+    let count = 0; // counterCreatorLE {count: 0} -> globalLE
 
-    return () => {
-        // {} -> counterCreatorLE // запомнит ссылку на объект counterCreatorLE {} (A)
-        let count = 0;
+    return () => { // A
+        // -> counterCreatorLE
         console.log(++count);
     };
 };
 
-const counter = counterCreator(); // globalLE {counter: func} -> null
-counter(); //1
-counter(); //1
-counter(); //1
+counterCreator(); // globalLE {counter: func} -> null
+counterCreator(); // globalLE {counter: func} -> null
+counterCreator(); // globalLE {counter: func} -> null
 
 
-
-//-3.7-------------------------------------------------------------------------------------------
+//-3.8-------------------------------------------------------------------------------------------
 // // globalLE {} -> null
 // let count = 0;
 //
