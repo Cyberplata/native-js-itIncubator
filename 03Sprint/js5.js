@@ -298,24 +298,25 @@
 //--4.2.-Пример с факториалом----------------------------------------
 // 5! --> 5 * 4! --> 5 * 4 * 3! --> 5 * 4 * 3 * 2! --> 5 * 4 * 3 * 2 * 1!
 
-let count = 0; // сделали для проверки ошибки добавили count
+// let count = 0; // сделали для проверки ошибки добавили count
+//
+// const factorial = (n) => {
+//     console.log(++count); // RangeError: Maximum call stack size exceeded
+//     if (n === 1) {
+//         return n;
+//     } else {
+//         return n * factorial(n - 1);
+//     }
+// };
+//
+// console.log(factorial(8000));
 
-const factorial = (n) => {
-    console.log(++count); // RangeError: Maximum call stack size exceeded
-    if (n === 1) {
-        return n;
-    } else {
-        return n * factorial(n - 1);
-    }
-};
-
-console.log(factorial(8000));
-
+//--5.-Пример с setTimeout----------------------------------------
 // globalLE {j: 1}
 
-// let j = 1;
-// for (var j = 1; j < 50; j++) {
-//   // {j: 1}
-//   // {j: 2}
-//   setTimeout(() => console.log(j), 1000);
-// }
+let j = 1;
+for (let j = 1; j < 50; j++) {
+    // {j: 1}
+    // {j: 2}
+    setTimeout(() => console.log(j), 1000);
+}
