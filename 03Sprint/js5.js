@@ -221,54 +221,56 @@
 
 
 //-3.7-Пример без записи в переменную counter---------------------------------------------------
-// Получается, мы вызвали функцию counterCreator() у нас отработала функция, но мы никуда не сохранили-записали,
-// что у нас идёт после return. Так что у нас удаляется сама функция и сама ссылка -> counterCreatorLE.
-// А точнее даже нигде не записывается.
-// globalLE {} -> null
-const counterCreator = () => {
-    // counterCreatorLE {} -> globalLE
-    let count = 0; // counterCreatorLE {count: 0} -> globalLE
-
-    return () => { // A
-        // -> counterCreatorLE
-        console.log(++count);
-    };
-};
-
-counterCreator(); // globalLE {counter: func} -> null
-counterCreator(); // globalLE {counter: func} -> null
-counterCreator(); // globalLE {counter: func} -> null
-
-
-//-3.8-------------------------------------------------------------------------------------------
+// // Получается, мы вызвали функцию counterCreator() у нас отработала функция, но мы никуда не сохранили-записали,
+// // что у нас идёт после return. Так что у нас удаляется сама функция и сама ссылка -> counterCreatorLE.
+// // А точнее даже нигде не записывается.
 // // globalLE {} -> null
-// let count = 0;
-//
 // const counterCreator = () => {
-//   // counterCreatorLE1 {count} -> globalLE
-//   // counterCreatorLE2 {count} -> globalLE
-//   let count = 0;
+//     // counterCreatorLE {} -> globalLE
+//     let count = 0; // counterCreatorLE {count: 0} -> globalLE
 //
-//   return () => {
-//     // {} -> counterCreatorLE1
-//     // {} -> counterCreatorLE2
-//     let count = 0;
-//     console.log(++count);
-//   };
+//     return () => { // A
+//         // -> counterCreatorLE
+//         console.log(++count);
+//     };
 // };
 //
-// const counter1 = counterCreator(); // globalLE {counter: func} -> null
-// const counter2 = counterCreator(); // globalLE {counter: func} -> null
-//
-// console.log(counter1 === counter2);
-//
-// counter1();
-// counter1();
-// counter1();
-//
-// counter2();
-// counter2();
-// counter2();
+// counterCreator(); // globalLE {counter: func} -> null
+// counterCreator(); // globalLE {counter: func} -> null
+// counterCreator(); // globalLE {counter: func} -> null
+
+
+//-3.8-Пример с 2-я counter1 и counter2 и разными count: начиная с локального counterCreatorLE1 {} -> globalLE (ответ: 1,2,3 1,2,3).
+// Дальше, когда let count = 0; внутри return (ответ: 1,1,1 1,1,1).
+// и последний момент когда на глобальном уровне let count = 0; (ответ: 1,2,3 4,5,6).
+// globalLE {} -> null
+let count = 0;
+
+const counterCreator = () => {
+  // counterCreatorLE1 {count} -> globalLE
+  // counterCreatorLE2 {count} -> globalLE
+  let count = 0;
+
+  return () => {
+    // {} -> counterCreatorLE1
+    // {} -> counterCreatorLE2
+    // let count = 0;
+    console.log(++count);
+  };
+};
+
+const counter1 = counterCreator(); // globalLE {counter: func} -> null
+const counter2 = counterCreator(); // globalLE {counter: func} -> null
+
+console.log(counter1 === counter2);
+
+counter1();
+counter1();
+counter1();
+console.log('--------------------------------------')
+counter2();
+counter2();
+counter2();
 
 // ---------------------------
 
