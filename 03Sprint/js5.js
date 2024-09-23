@@ -70,50 +70,50 @@
 
 
 //-3-----------------------------------------------------------------------------------------
-//-Примеры, что заносится в лексическое окружение и с каким значением
-// globalLE {} -> null
-
+// -Примеры, что заносится в лексическое окружение и с каким значением
+// // globalLE {} -> null
+//
 // let car = 'bmw' // globalLE {car: 'bmw'} -> null
 //
 // car = 'kia'// globalLE {car: 'kia'} -> null
-
+//
 // {
 //     // le - любые фигурные скобки создают лексическое окружение
 // }
-
+//
 // const obj = {
 //     // здесь не создаётся le
 // }
-
+//
 // while() {
 // 	// whileLE {} - здесь создаётся свой le, сам while никак не отображается в globalLE
-
+//
 // 	const car = 'audi'
 // }
-
+//
 // const arr = []// globalLE {car: 'kia', arr: []} -> null
 // const obj = {}// globalLE {car: 'kia', arr: [], obj: {}} -> null
 
 
 //-3.1------------------------------------------------------------------------------------------
-// // globalLE {startEngine: func, car: undefined} -> null
-// startEngine(); // 1.Когда вызывается функция. создаётся своё le
-// var car = "bmw"; // globalLE {startEngine: func, car: 'bmw'} -> null
-//
-// function startEngine() {
-//     // startEngineLE {} -> globalLE // 2.И ссылка идёт на глобальное лексическое окружение
-//
-//     // const car = "kia";
-//     console.log(`Start ${car}`);
-//
-//     // return () => console.log(`Start ${car}`); // 3.При выполнении console.log он идёт сначала в startEngineLE {}, там он не находит переменную car дальше по ссылке переходит в globalLE и там car: undefined. Поэтому в 1ом случае получили "Start undefined". А уже во 2ом случае "Start bmw"
-// }
-//
-// const foo = startEngine(); // globalLE {startEngine: func, car: 'bmw', foo: func} -> null
-//
-// car = "audi"; // globalLE {startEngine: func, car: 'audi', foo: func} -> null
-//
-// // foo();
+// globalLE {startEngine: func, car: undefined} -> null
+startEngine(); // 1.Когда вызывается функция. создаётся своё le
+var car = "bmw"; // globalLE {startEngine: func, car: 'bmw'} -> null
+
+function startEngine() {
+    // startEngineLE {} -> globalLE // 2.И ссылка идёт на глобальное лексическое окружение
+
+    // const car = "kia";
+    console.log(`Start ${car}`);
+
+    // return () => console.log(`Start ${car}`); // 3.При выполнении console.log он идёт сначала в startEngineLE {}, там он не находит переменную car дальше по ссылке переходит в globalLE и там car: undefined. Поэтому в 1ом случае получили "Start undefined". А уже во 2ом случае "Start bmw"
+}
+
+const foo = startEngine(); // globalLE {startEngine: func, car: 'bmw', foo: func} -> null
+
+car = "audi"; // globalLE {startEngine: func, car: 'audi', foo: func} -> null
+
+// foo();
 
 
 //-3.2--------------------------------------------------------------------------------------------
@@ -241,9 +241,9 @@
 
 
 //-3.8-Пример с 2-я counter1 и counter2 и разными count:
-// Начиная с локального counterCreatorLE1 {} -> globalLE (ответ: 1,2,3 1,2,3).
-// Дальше, когда let count = 0; внутри return (ответ: 1,1,1 1,1,1).
-// И последний момент когда на глобальном уровне let count = 0; (ответ: 1,2,3 4,5,6).
+// // Начиная с локального counterCreatorLE1 {} -> globalLE (ответ: 1,2,3 1,2,3).
+// // Дальше, когда let count = 0; внутри return (ответ: 1,1,1 1,1,1).
+// // И последний момент когда на глобальном уровне let count = 0; (ответ: 1,2,3 4,5,6).
 // globalLE {} -> null
 // let count = 0;
 //
@@ -278,11 +278,11 @@
 // Обязательно должно быть 2 правила у рекурсии: это выход из неё и шаг
 
 //--4.1.-Пример с возведением в степень----------------------------------------
-// Вызваться функция pow может внутри себя, потому что у неё есть ссылка на внешнее LE,
-// а в globalLE {pow: func} -> null она есть
-// 2(4) --> 2 * 2(3) --> 2 * 2 * 2(2) --> 2 * 2 * 2 * 2(1)
-
-// globalLE {} -> null
+// // Вызваться функция pow может внутри себя, потому что у неё есть ссылка на внешнее LE,
+// // а в globalLE {pow: func} -> null она есть
+// // 2(4) --> 2 * 2(3) --> 2 * 2 * 2(2) --> 2 * 2 * 2 * 2(1)
+//
+// // globalLE {} -> null
 // const pow = (x, n) => {
 //     // {x, n} -> globalLE
 //     if (n === 1) { // условие выхода из рекурсии
@@ -296,8 +296,8 @@
 
 
 //--4.2.-Пример с факториалом----------------------------------------
-// 5! --> 5 * 4! --> 5 * 4 * 3! --> 5 * 4 * 3 * 2! --> 5 * 4 * 3 * 2 * 1!
-
+// // 5! --> 5 * 4! --> 5 * 4 * 3! --> 5 * 4 * 3 * 2! --> 5 * 4 * 3 * 2 * 1!
+//
 // let count = 0; // сделали для проверки ошибки добавили count
 //
 // const factorial = (n) => {
@@ -311,12 +311,12 @@
 //
 // console.log(factorial(8000));
 
-//--5.-Пример с setTimeout----------------------------------------
-// globalLE {j: 1}
-
-let j = 1;
-for (let j = 1; j < 50; j++) {
-    // {j: 1}
-    // {j: 2}
-    setTimeout(() => console.log(j), 1000);
-}
+// //--5.-Пример с setTimeout----------------------------------------
+// // globalLE {j: 1}
+//
+// let j = 1;
+// for (let j = 1; j < 50; j++) {
+//     // {j: 1}
+//     // {j: 2}
+//     setTimeout(() => console.log(j), 1000);
+// }
