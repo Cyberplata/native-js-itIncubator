@@ -153,9 +153,9 @@
 //
 //     console.log('then 1', result); //1
 //
-    return new Promise((resolve, reject) => { // (*)
-        setTimeout(() => resolve(result * 2), 1000);
-    });
+//     return new Promise((resolve, reject) => { // (*)
+//         setTimeout(() => resolve(result * 2), 1000);
+//     });
 //
 // }).then(function(result) { // (**)
 //
