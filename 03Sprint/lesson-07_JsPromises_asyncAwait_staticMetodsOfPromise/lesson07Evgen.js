@@ -146,24 +146,84 @@
 //
 // asyncFetch();
 
-// Пример 1.4 - обработка ошибки в async-await -> try-catch
-// Если ошибка - прерывает своё выполнение и переходит в блок catch,
-// если в 1ом промисе будет ошибка, то другие промисы выполняться не будут,
-// если мы хотим, двигаться дальше не зависимо от ошибки, то в каждом кейсе нужно писать try-catch
+// // Пример 1.4 - обработка ошибки в async-await -> try-catch
+// // Если ошибка - прерывает своё выполнение и переходит в блок catch,
+// // если в 1ом промисе будет ошибка, то другие промисы выполняться не будут,
+// // если мы хотим, двигаться дальше не зависимо от ошибки, то в каждом кейсе нужно писать try-catch
+// const asyncFetch = async () => {
+//     try {
+//         const yahooData = await fetch("https:/yahoo.com/");
+//         console.log("data from yahoo", yahooData.url);
+//
+//         const bingData = await fetch("https:/bing.com/");
+//         console.log("data from bing", bingData.url);
+//
+//         const googleData = await fetch("https:/g123oogle.com/");
+//         console.log("data from google", googleData.url)
+//     } catch (err) {
+//         console.log("ERROR", err)
+//     }
+// };
+//
+// asyncFetch(); // ERROR TypeError: fetch failed
+
+// // Пример 1.5 - На каждый запрос try-catch
+// const asyncFetch = async () => {
+//     try {
+//         const yahooData = await fetch("https:/yahoo1213.com/");
+//         console.log("data from yahoo", yahooData.url);
+//     } catch (err) {
+//         console.log("ERROR", err)
+//     }
+//     try {
+//         const bingData = await fetch("https:/bing.com/");
+//         console.log("data from bing", bingData.url);
+//     } catch (err) {
+//         console.log("ERROR", err)
+//     }
+//     try {
+//         const googleData = await fetch("https:/google.com/");
+//         console.log("data from google", googleData.url)
+//     } catch (err) {
+//         console.log("ERROR", err)
+//     }
+// };
+//
+// asyncFetch();
+// // ERROR TypeError: fetch failed
+// // data from bing https://www.bing.com/?toWww=1&redig=F2613618660C493483D3294F62BB5C09
+// // data from google https://www.google.com/
+
+
+// Пример 1.6 комбинации с .catch() в async-await
+
 const asyncFetch = async () => {
     try {
-        const yahooData = await fetch("https:/yahoo.com/");
-        console.log("data from yahoo", yahooData.url);
+        const yahooData = await fetch("https:/yahoo123.com/").catch((err) => {
+            // catch вернёт undefined, то есть промис зарезолвился undefined
+            console.log("ERROR1", err)
+        })
+        console.log("data from yahoo", yahooData);
 
         const bingData = await fetch("https:/bing.com/");
         console.log("data from bing", bingData.url);
 
-        const googleData = await fetch("https:/g123oogle.com/"); // Если ошибка - прерывает своё выполнение и переходит в блок catch
+        const googleData = await fetch("https:/google.com/");
         console.log("data from google", googleData.url)
     } catch (err) {
-        console.log("ERROR",err)
+        console.log("ERROR2", err)
     }
-
 };
 
 asyncFetch();
+// --- НЕТ .url ---
+// ERROR1 TypeError: fetch failed
+// data from yahoo undefined
+// data from bing https://www.bing.com/?toWww=1&redig=D68AAC67DD6D466ABDA231DA12EC6E5E
+// data from google https://www.google.com/
+
+// // --- ЕСТЬ .url ---
+// ERROR1 TypeError: fetch failed
+// Если оставляем .url -> yahooData.url то и пишет, что нет такого свойства поэтому ошибка ERROR2
+// ERROR2 TypeError: Cannot read properties of undefined (reading 'url')
+
