@@ -1,52 +1,52 @@
 // promise .then .catch .finally
 
 // function fetchCallback(url, callback) {
-// 	//
-// 	callback()
+//     //
+//     callback()
 // }
 //
 // fetchCallback("https://booksstore.com/authors", (err, data) => {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     fetchCallback(
-//       `https://booksstore.com/authors/${data.authorId}`,
-//       (err, data) => {
-//         if (err) {
-//           console.log(err);
-//         } else {
-//           fetchCallback(
-//             `https://booksstore.com/authors/authorId/${data.books}`,
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         fetchCallback(
+//             `https://booksstore.com/authors/${data.authorId}`,
 //             (err, data) => {
-//               if (err) {
-//                 console.log(err);
-//               } else {
-//                 fetchCallback(
-//                   `https://booksstore.com/authors/authorId/books/${data.bookId}`,
-//                   (err, data) => {
-//                     if (err) {
-//                       console.log(err);
-//                     } else {
-//                       fetchCallback(
-//                         `https://booksstore.com/authors/authorId/books/bookId/${data.page}`,
+//                 if (err) {
+//                     console.log(err);
+//                 } else {
+//                     fetchCallback(
+//                         `https://booksstore.com/authors/authorId/${data.books}`,
 //                         (err, data) => {
-//                           if (err) {
-//                             console.log(err);
-//                           } else {
-//                             console.log(data);
-//                           }
+//                             if (err) {
+//                                 console.log(err);
+//                             } else {
+//                                 fetchCallback(
+//                                     `https://booksstore.com/authors/authorId/books/${data.bookId}`,
+//                                     (err, data) => {
+//                                         if (err) {
+//                                             console.log(err);
+//                                         } else {
+//                                             fetchCallback(
+//                                                 `https://booksstore.com/authors/authorId/books/bookId/${data.page}`,
+//                                                 (err, data) => {
+//                                                     if (err) {
+//                                                         console.log(err);
+//                                                     } else {
+//                                                         console.log(data);
+//                                                     }
+//                                                 }
+//                                             );
+//                                         }
+//                                     }
+//                                 );
+//                             }
 //                         }
-//                       );
-//                     }
-//                   }
-//                 );
-//               }
+//                     );
+//                 }
 //             }
-//           );
-//         }
-//       }
-//     );
-//   }
+//         );
+//     }
 // });
 
 // fetchPromise("https://booksstore.com/authors")
@@ -60,28 +60,48 @@
 // 		})
 // 	})
 
+
+// // Переписали пример на .then(), .catch()
 // fetchPromise("https://booksstore.com/authors")
-//   .then((data) => {
-//     return fetchPromise(`https://booksstore.com/authors/${data.authorId}`);
-//   })
-//   .then((data) => {
-//     return fetchPromise(
-//       `https://booksstore.com/authors/authorId/${data.books}`
-//     );
-//   })
-//   .then((data) => {
-//     return fetchPromise(
-//       `https://booksstore.com/authors/authorId/books/${data.bookId}`
-//     );
-//   })
-//   .then((data) => {
-//     return fetchPromise(
-//       `https://booksstore.com/authors/authorId/books/bookId/${data.page}`
-//     );
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
+//     .then((data) => {
+//         return fetchPromise(`https://booksstore.com/authors/${data.authorId}`);
+//     })
+//     .then((data) => {
+//         return fetchPromise(
+//             `https://booksstore.com/authors/authorId/${data.books}`
+//         );
+//     })
+//     .then((data) => {
+//         return fetchPromise(
+//             `https://booksstore.com/authors/authorId/books/${data.bookId}`
+//         );
+//     })
+//     .then((data) => {
+//         return fetchPromise(
+//             `https://booksstore.com/authors/authorId/books/bookId/${data.page}`
+//         );
+//     })
+//     .then((data) => {
+//         console.log(data)
+//     })
+//     .catch((err) => {
+//         console.log(err);
+//     });
+
+// Переписали пример на async-await
+const asyncFetch = async () => {
+    try {
+        const autorsData = await fetchPromise("https://booksstore.com/authors")
+        const authorIdData = await fetchPromise(`https://booksstore.com/authors/${autorsData.authorId}`)
+        const booksData = await fetchPromise(`https://booksstore.com/authors/authorId/${authorIdData.books}`)
+        const pageData = await fetchPromise(`https://booksstore.com/authors/authorId/books/bookId/${booksData.page}`)
+
+        console.log(pageData);
+    } catch (err) {
+        console.log("ERROR", err)
+    }
+}
+asyncFetch()
 
 // promise
 
@@ -300,10 +320,10 @@
 // Задача 1: Умножение чисел
 // Напишите функцию multiply(x, y), которая возвращает промис, переходящий в состояние "resolved" с результатом умножения x и y через 1 секунду.
 
-function multiply(x,y) {
+function multiply(x, y) {
     return new Promise((res) => {
         setTimeout(() => {
-            res(x*y)
+            res(x * y)
         }, 1000)
     })
 }
@@ -315,13 +335,14 @@ function multiply(x,y) {
 // Задача 2: Сложение чисел с задержкой
 // Напишите функцию add(x, y), которая возвращает промис, переходящий в состояние "resolved" с результатом сложения x и y через 2 секунды.
 
-function add(x,y) {
+function add(x, y) {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve(x+y)
+            resolve(x + y)
         }, 2000)
     })
 }
+
 // add(5, 2).then((data) => {
 //     console.log(data)
 // })
