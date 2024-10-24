@@ -1,4 +1,3 @@
-
 //
 // const promiseFetch = (url) => {
 //     return new Promise((res, rej) => {
@@ -79,6 +78,7 @@
 
 // ____________Мои заметки____________
 
+//Пример 1
 // import fetch from "node-fetch"
 
 // fetch("https:/yahoo.com/")
@@ -116,16 +116,54 @@
 // console.log('end') // 3
 // // time: 52:52
 
-// Пример 1.2
-console.log("start") // 1
+// // Пример 1.2
+// console.log("start") // 1
+//
+// const asyncFetch = async () => {
+//     console.log("start request to yahoo"); // 2
+//     const yahooData = await fetch(("https:/yahoo.com/"));
+//     console.log("data from yahoo", yahooData); // 4
+// };
+//
+// asyncFetch();
+//
+// console.log("end"); // 3
 
+// // Пример 1.3 - переписали пример с .then(), только без .catch() из Примера 1.
+// // Порядок действий следующий:
+// // 1. наша функция доходит до слова await,
+// // 2. останавливается и дожидается результата промиса,
+// // 3. записывает в переменную,
+// // 4. выводит результат промиса через консоль
+// const asyncFetch = async () => {
+//     const yahooData = await fetch("https:/yahoo.com/");
+//     console.log("data from yahoo", yahooData.url); // 1
+//     const bingData = await fetch("https:/bing.com/");
+//     console.log("data from bing", bingData.url); // 2
+//     const googleData = await fetch("https:/google.com/");
+//     console.log("data from google", googleData.url) // 3
+// };
+//
+// asyncFetch();
+
+// Пример 1.4 - обработка ошибки в async-await -> try-catch
+// Если ошибка - прерывает своё выполнение и переходит в блок catch,
+// если в 1ом промисе будет ошибка, то другие промисы выполняться не будут,
+// если мы хотим, двигаться дальше не зависимо от ошибки, то в каждом кейсе нужно писать try-catch
 const asyncFetch = async () => {
-    console.log("start request to yahoo"); // 2
-    const yahooData = await fetch(("https:/yahoo.com/"));
-    console.log("data from yahoo", yahooData); // 4
+    try {
+        const yahooData = await fetch("https:/yahoo.com/");
+        console.log("data from yahoo", yahooData.url);
+
+        const bingData = await fetch("https:/bing.com/");
+        console.log("data from bing", bingData.url);
+
+        const googleData = await fetch("https:/g123oogle.com/"); // Если ошибка - прерывает своё выполнение и переходит в блок catch
+        console.log("data from google", googleData.url)
+    } catch (err) {
+        console.log("ERROR",err)
+    }
+
 };
 
 asyncFetch();
-
-console.log("end"); // 3
-
