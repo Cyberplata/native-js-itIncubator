@@ -1,3 +1,4 @@
+
 //
 // const promiseFetch = (url) => {
 //     return new Promise((res, rej) => {
@@ -76,27 +77,55 @@
 // })
 
 
+// ____________Мои заметки____________
+
+// import fetch from "node-fetch"
+
+// fetch("https:/yahoo.com/")
+//     .then((data) => {
+//         console.log("data from yahoo", data.url)
+//         return fetch("https:/bing.com/")
+//     })
+//     .then((data) => {
+//         console.log("data from bing", data.url)
+//         return fetch("https:/google.com/")
+//     })
+//     .then((data) => {
+//         console.log("data from google", data.url)
+//     })
+//     .catch((err) => {
+//         console.log(err)
+//     })
 
 
-
-
-
-
-
-
-// Мои заметки
 // I. async-await:
 // Чтобы объявить асинхронную функцию, нужно написать через ключевое слово async.
 // Это даёт нам право написать внутри await.
 
-    // Пример 1.1
-console.log('start') // 1
+// // Пример 1.1
+// console.log('start') // 1
+//
+// const asyncFetch = async () => {
+//     console.log('async') // 2
+//     // Так как мы не объявили через await значит это синхронный код.
+//     // То есть всё что есть до слова await это синхронные действия, после асинхронные.
+// }
+//
+// asyncFetch();
+//
+// console.log('end') // 3
+// // time: 52:52
+
+// Пример 1.2
+console.log("start") // 1
 
 const asyncFetch = async () => {
-    console.log('async') // 2 так как мы не объявили через await значит это синхронный код
-}
+    console.log("start request to yahoo"); // 2
+    const yahooData = await fetch(("https:/yahoo.com/"));
+    console.log("data from yahoo", yahooData); // 4
+};
 
 asyncFetch();
 
-console.log('end') // 3
+console.log("end"); // 3
 
