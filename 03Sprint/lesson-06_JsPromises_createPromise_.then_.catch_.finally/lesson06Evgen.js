@@ -88,20 +88,25 @@
 //         console.log(err);
 //     });
 
-// // Переписали пример на async-await
-// const asyncFetch = async () => {
-//     try {
-//         const autorsData = await fetchPromise("https://booksstore.com/authors")
-//         const authorIdData = await fetchPromise(`https://booksstore.com/authors/${autorsData.authorId}`)
-//         const booksData = await fetchPromise(`https://booksstore.com/authors/authorId/${authorIdData.books}`)
-//         const pageData = await fetchPromise(`https://booksstore.com/authors/authorId/books/bookId/${booksData.page}`)
-//
-//         console.log(pageData);
-//     } catch (err) {
-//         console.log("ERROR", err)
-//     }
-// }
-// asyncFetch()
+// // TIME: 1:25:04
+// Переписали пример на async-await
+const asyncFetch = async () => {
+    try {
+        const autorsData = await fetchPromise("https://booksstore.com/authors")
+        const authorIdData = await fetchPromise(`https://booksstore.com/authors/${autorsData.authorId}`)
+        const booksData = await fetchPromise(`https://booksstore.com/authors/authorId/${authorIdData.books}`)
+        const pageData = await fetchPromise(`https://booksstore.com/authors/authorId/books/bookId/${booksData.page}`)
+
+        console.log(pageData);
+        return [autorsData, authorIdData, booksData, pageData]
+    } catch (err) {
+        console.log("ERROR", err)
+    }
+}
+// асинхронная функция возращает промис и мы с этими данными можем как-то дальше работать
+asyncFetch().then((dataArr) => {
+    console.log("then from async")
+})
 
 // promise
 

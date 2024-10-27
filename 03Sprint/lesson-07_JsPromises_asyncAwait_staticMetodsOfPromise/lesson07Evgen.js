@@ -195,35 +195,106 @@
 // // data from google https://www.google.com/
 
 
-// Пример 1.6 комбинации с .catch() в async-await
+// // Пример 1.6 комбинации с .catch() в async-await
+// const asyncFetch = async () => {
+//     try {
+//         const yahooData = await fetch("https:/yahoo123.com/").catch((err) => {
+//             // catch вернёт undefined, то есть промис зарезолвился undefined
+//             console.log("ERROR1", err)
+//         })
+//         console.log("data from yahoo", yahooData);
+//
+//         const bingData = await fetch("https:/bing.com/");
+//         console.log("data from bing", bingData.url);
+//
+//         const googleData = await fetch("https:/google.com/");
+//         console.log("data from google", googleData.url)
+//     } catch (err) {
+//         console.log("ERROR2", err)
+//     }
+// };
+//
+// asyncFetch();
+// // --- НЕТ .url ---
+// // ERROR1 TypeError: fetch failed
+// // data from yahoo undefined
+// // data from bing https://www.bing.com/?toWww=1&redig=D68AAC67DD6D466ABDA231DA12EC6E5E
+// // data from google https://www.google.com/
+//
+// // // --- ЕСТЬ .url ---
+// // ERROR1 TypeError: fetch failed
+// // Если оставляем .url -> yahooData.url то и пишет, что нет такого свойства поэтому ошибка ERROR2
+// // ERROR2 TypeError: Cannot read properties of undefined (reading 'url')
 
-const asyncFetch = async () => {
-    try {
-        const yahooData = await fetch("https:/yahoo123.com/").catch((err) => {
-            // catch вернёт undefined, то есть промис зарезолвился undefined
-            console.log("ERROR1", err)
-        })
-        console.log("data from yahoo", yahooData);
 
-        const bingData = await fetch("https:/bing.com/");
-        console.log("data from bing", bingData.url);
+// // Пример 1.7 Переписали пример c callback на async-await ->
+// // TIME: 1:25:04
+// // Переписали пример на async-await
+// const asyncFetch = async () => {
+//     try {
+//         const autorsData = await fetchPromise("https://booksstore.com/authors")
+//         const authorIdData = await fetchPromise(`https://booksstore.com/authors/${autorsData.authorId}`)
+//         const booksData = await fetchPromise(`https://booksstore.com/authors/authorId/${authorIdData.books}`)
+//         const pageData = await fetchPromise(`https://booksstore.com/authors/authorId/books/bookId/${booksData.page}`)
+//
+//         console.log(pageData);
+//         return [autorsData, authorIdData, booksData, pageData]
+//     } catch (err) {
+//         console.log("ERROR", err)
+//     }
+// }
+// // асинхронная функция возращает промис и мы с этими данными можем как-то дальше работать
+// asyncFetch().then((dataArr) => {
+//     console.log("then from async")
+// })
 
-        const googleData = await fetch("https:/google.com/");
-        console.log("data from google", googleData.url)
-    } catch (err) {
-        console.log("ERROR2", err)
-    }
-};
 
-asyncFetch();
-// --- НЕТ .url ---
-// ERROR1 TypeError: fetch failed
-// data from yahoo undefined
-// data from bing https://www.bing.com/?toWww=1&redig=D68AAC67DD6D466ABDA231DA12EC6E5E
-// data from google https://www.google.com/
+// --------------------------------------------------------
+// Time: 1:36:29 - https://www.youtube.com/watch?v=euTPHnWI2QY&t=5789s
+// Пример 1.8 Функции генераторы.
+// 1. Стрелочные функции нельзя использовать для создания генератора.
+// 2. Возвращает специальный итерируемый объект - generator
+// const generator = function* foo() {}
+// 3. gerateSalaryWithBonus(1000) - вот этот вызов не запускает тело.
+// 4. Метод next() как раз запускает тело функции генератора, и возвращает что записано в первом yield
+// next() вернёт ещё объект, где будет поле value, в котором и будет сидеть значение
+// 5. Если будем вызывать ещё раз generator.next() или generator.next().value, то переёдет ко 2-у yield итд
+// 6. Поле done: false говорит о том, что функция генератор ещё не завершилась,
+// но у нас отрабатывает неявный return (как и в обычных функциях),
+// если вызовов больше чем yield и результат будет -> { value: undefined, done: true }.
+// 7. Но мы можем вместо последнего yield сделать return и тогда мы сразу завершим функцию и поле done: true ->
+// { value: 1350, done: true }.
+// Так что лучше всего функцию генератор завершать return, а не yield.
+// 8. yield может в две стороны возвращать:
+// a) То есть yield возвращает из функции генератора то, что написано справа salary + (salary / 100) * 15,
+// b) А если мы во 2-ой next() что-то передаём -> next(10), то он запишет внутрь функции в переменную num.
 
-// // --- ЕСТЬ .url ---
-// ERROR1 TypeError: fetch failed
-// Если оставляем .url -> yahooData.url то и пишет, что нет такого свойства поэтому ошибка ERROR2
-// ERROR2 TypeError: Cannot read properties of undefined (reading 'url')
 
+function* gerateSalaryWithBonus(salary) {
+    console.log('before 1 yield') // before 1 yield
+    const num = yield salary + (salary / 100) * 15;
+    console.log('before 2 yield', num) // before 2 yield 10
+    yield salary + (salary / 100) * 20;
+    console.log('before 3 yield')
+    yield salary + (salary / 100) * 25;
+    console.log('before 4 yield')
+    yield salary + (salary / 100) * 30;
+    console.log('before 5 yield')
+    // yield salary + (salary / 100) * 35;
+    return salary + (salary / 100) * 35;
+}
+
+const generator = gerateSalaryWithBonus(1000)
+
+// но функция генератор не может сразу вернуть результат, а возращает объект специальный, поэтому записываем в generator
+// console.log(generator.next().value) // 1150
+console.log(generator.next()) // { value: 1150, done: false }
+console.log(generator.next(10)) // { value: 1200, done: false }
+console.log(generator.next()) // { value: 1250, done: false }
+console.log(generator.next()) // { value: 1300, done: false }
+console.log(generator.next()) // { value: 1350, done: false }
+console.log(generator.next()) // {  value: undefined, done: true }
+// console.log(gerateSalaryWithBonus(1000)) // Object [Generator] {}
+
+
+// --------------------------------------------------------
