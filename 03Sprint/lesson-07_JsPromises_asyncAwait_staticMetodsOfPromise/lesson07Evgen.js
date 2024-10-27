@@ -297,39 +297,78 @@
 // // console.log(gerateSalaryWithBonus(1000)) // Object [Generator] {}
 
 
-// Пример 1.8.1 Примерно, то что написано под капотом асинхронной функции с помощью генератора.
+// // Пример 1.8.1 Примерно, то что написано под капотом асинхронной функции с помощью генератора.
+//
+// // Определение функции с именем asyncAlt, которая принимает функцию генератора в качестве аргумента
+// function newAsync(generatorFunction) {
+//     // Возвращаем функцию
+//     return function () {
+//         // Создайте и назначьте объект-генератор
+//         const generator = generatorFunction();
+//
+//         // Определите функцию, которая принимает следующую итерацию генератора.
+//         function resolve(next) {
+//             // Если генератор закрыт(завершен) и больше нет значений для вывода,
+//             // резолвим последнее значение.
+//             if (next.done) {
+//                 return Promise.resolve(next.value)
+//             }
+//
+//             //Если ещё есть значения, для следующих yield, то это промис
+//             // и их необходимо резолвить.
+//             return Promise.resolve(next.value).then((response) => {
+//                 return resolve(generator.next(response));
+//             });
+//         }
+//
+//         // Начинаем резолвить промис
+//         return resolve(generator.next());
+//     }
+// }
+//
+// const getUsers = newAsync(function*() {
+//     const response = yield fetch("https://www.google.com/search?q=js")
+//     console.log(response.url)
+// })
+// getUsers()
 
-// Определение функции с именем asyncAlt, которая принимает функцию генератора в качестве аргумента
-function newAsync(generatorFunction) {
-    // Возвращаем функцию
-    return function () {
-        // Создайте и назначьте объект-генератор
-        const generator = generatorFunction();
+// --------------------------------------------------------
 
-        // Определите функцию, которая принимает следующую итерацию генератора.
-        function resolve(next) {
-            // Если генератор закрыт(завершен) и больше нет значений для вывода,
-            // резолвим последнее значение.
-            if (next.done) {
-                return Promise.resolve(next.value)
-            }
 
-            //Если ещё есть значения, для следующих yield, то это промис
-            // и их необходимо резолвить.
-            return Promise.resolve(next.value).then((response) => {
-                return resolve(generator.next(response));
-            });
-        }
+// 1.9 Примеры статических методов промиса: .all() .any() .race() .allSettled()
 
-        // Начинаем резолвить промис
-        return resolve(generator.next());
-    }
-}
+// Когда ваша следующая логика промиса, зависит от выполнения всех промисов или какие-то несколько запросов и
+// в зависимости от результата сделать что-то, то импользуем статические методы.
 
-const getUsers = newAsync(function*() {
-    const response = yield fetch("https://www.google.com/search?q=js")
-    console.log(response.url)
-})
-getUsers()
 
-// // --------------------------------------------------------
+// ----all----
+// Принимает метод массив промисов и возвращает массив дат в последовательности, в котором мы установили.
+// 1. Метод all() принимает массив промисов и возвращает новый промис. Новый промис завершится, когда завершится весь переданный список промисов, и его результатом будет массив их результатов, причем порядок элементов массива в точности соответствует порядку исходных промисов. Если любой из промисов завершится с ошибкой, то промис, возвращённый Promise.all, немедленно завершается с этой ошибкой
+
+// // var1
+// const pr1 = fetch("https:/yahoo.com/");
+// const pr2 = fetch("https:/bing121.com/");
+// const pr3 = fetch("https:/google.com/");
+//
+// const bigPromise = Promise.all([pr1, pr2, pr3]);
+//
+// bigPromise
+//     .then((bigData) => {
+//         console.log(bigData) // https://www.yahoo.com/
+//     })
+//     .catch((err) => {
+//         console.log(err.message) // fetch failed
+//     });
+
+// var2
+Promise.all([
+  fetch("https://yahoo.com/"),
+  fetch(`https://bing.com/`),
+  fetch("https://google.com/"),
+])
+  .then((bigData) => {
+    console.log(bigData);
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
