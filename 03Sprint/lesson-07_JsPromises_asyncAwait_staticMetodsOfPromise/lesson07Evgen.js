@@ -341,34 +341,102 @@
 // в зависимости от результата сделать что-то, то импользуем статические методы.
 
 
-// ----all----
-// Принимает метод массив промисов и возвращает массив дат в последовательности, в котором мы установили.
-// 1. Метод all() принимает массив промисов и возвращает новый промис. Новый промис завершится, когда завершится весь переданный список промисов, и его результатом будет массив их результатов, причем порядок элементов массива в точности соответствует порядку исходных промисов. Если любой из промисов завершится с ошибкой, то промис, возвращённый Promise.all, немедленно завершается с этой ошибкой
+// // ----all----
+// // Принимает метод массив промисов и возвращает массив дат в последовательности, в котором мы установили.
+// // 1. Метод all() принимает массив промисов и возвращает новый промис. Новый промис завершится, когда завершится весь переданный список промисов, и его результатом будет массив их результатов, причем порядок элементов массива в точности соответствует порядку исходных промисов. Если любой из промисов завершится с ошибкой, то промис, возвращённый Promise.all, немедленно завершается с этой ошибкой
+//
+// // // var1
+// // const pr1 = fetch("https:/yahoo.com/");
+// // const pr2 = fetch("https:/bing121.com/");
+// // const pr3 = fetch("https:/google.com/");
+// //
+// // const bigPromise = Promise.all([pr1, pr2, pr3]);
+// //
+// // bigPromise
+// //     .then((bigData) => {
+// //         console.log(bigData) // https://www.yahoo.com/
+// //     })
+// //     .catch((err) => {
+// //         console.log(err.message) // fetch failed
+// //     });
+//
+// // var2
+// Promise.all([
+//   fetch("https://yahoo.com/"),
+//   fetch(`https://bing.com/`),
+//   fetch("https://google.com/"),
+// ])
+//   .then((bigData) => {
+//     console.log(bigData);
+//   })
+//   .catch((err) => {
+//     console.log(err.message);
+//   });
+// // TIME: 2:08:54 - https://www.youtube.com/watch?v=euTPHnWI2QY
 
-// // var1
-// const pr1 = fetch("https:/yahoo.com/");
-// const pr2 = fetch("https:/bing121.com/");
-// const pr3 = fetch("https:/google.com/");
-//
-// const bigPromise = Promise.all([pr1, pr2, pr3]);
-//
-// bigPromise
-//     .then((bigData) => {
-//         console.log(bigData) // https://www.yahoo.com/
+
+// // ---- race ----
+// // 2. Метод race() ждёт только первый выполненный промис (то есть из pending в fulfilled или rejected), из которого берёт результат (или ошибку),
+// // после этого все остальные промисы игнорируются.
+// // С помощью race можно делать пинги серверов и проверяем какие серверы быстрее отвечают нам.
+// Promise.race([
+//     fetch("https://yahoo345345.com/"),
+//     fetch(`https://bing.com/`),
+//     fetch("https://google.com/"),
+// ])
+//     .then((data) => {
+//         console.log(data.url);
 //     })
 //     .catch((err) => {
-//         console.log(err.message) // fetch failed
+//         console.log("ERROR", err.message);
 //     });
 
-// var2
-Promise.all([
-  fetch("https://yahoo.com/"),
-  fetch(`https://bing.com/`),
-  fetch("https://google.com/"),
-])
-  .then((bigData) => {
-    console.log(bigData);
-  })
-  .catch((err) => {
-    console.log(err.message);
-  });
+
+// // ---- any ----
+// // 3. Метод any() очень похож на Promise.race, но ждёт только первый успешно выполненный промис,
+// // из которого берёт результат. Если ни один из переданных промисов не завершится успешно,
+// // тогда возвращённый объект Promise будет отклонён с помощью AggregateError – специального объекта ошибок,
+// // который хранит все ошибки промисов в своём свойстве errors.
+//
+// Promise.any([
+//   fetch("https://yahoo435645.com/"),
+//   fetch(`https://bing23456564.com/`),
+//   fetch("https://google3545.com/"),
+// ])
+//   .then((data) => {
+//     console.log(data.url);
+//   })
+//   .catch((err) => {
+//     console.log("ERROR", err);
+//   });
+
+
+// // ---- allSettled ----
+// // 4. Метод allSettled() не похож на все остальные методы, которые мы рассмотрели выше тем,
+// // что промис, который возвращает даный метод никогда не зареджектится,
+// // а соответственно никогда не отработает catch().
+// // У данного метода всегда будет отрабатывать метод .then() с таким массивом елементов:
+// // {status:"fulfilled", value:результат} для успешных завершений,
+// // {status:"rejected", reason:ошибка} для ошибок.
+//
+// Promise.allSettled([
+//   fetch("https://yahoo.com/?js"),
+//   fetch(`https://bing3455.com/?js`),
+//   fetch("https://google.com/?js"),
+// ]).then((data) => {
+//   console.log("THEN", data);
+// });
+
+// Пример, что с данными можно делать и как их получить
+Promise.allSettled([
+    fetch("https://yahoo.com/?js"),
+    fetch(`https://bing3455.com/?js`),
+    fetch("https://google.com/?js"),
+]).then((data) => {
+    data.map((obj) => {
+        if (obj.status === 'rejected') {
+            console.log('rejected', obj.reason.message)
+        }
+        console.log('resolve', obj.value.url)
+    });
+});
