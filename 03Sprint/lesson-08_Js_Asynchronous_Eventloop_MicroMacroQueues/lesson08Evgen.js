@@ -150,26 +150,26 @@
 
 // ------------------------------
 
-// async function first() {
-//   console.log(9);
-//   await Promise.resolve(2).then((r) => console.log(r));
-//   console.log(0);
-//   await Promise.resolve(3).then((r) => console.log(r));
-// }
-//
-// async function second() {
-//   console.log(10);
-//   await Promise.resolve(4).then((r) => console.log(r));
-//   console.log(11);
-//   await Promise.resolve(5).then((r) => console.log(r));
-// }
-//
-// first();
-// second();
-//
-// const promises = Promise.resolve("new Promise");
-// promises.then((str) => console.log(str));
-// // 9 10 2 4 new Promise 0 11 3 5
+async function first() {
+  console.log(9);
+  await Promise.resolve(2).then((r) => console.log(r));
+  console.log(0);
+  await Promise.resolve(3).then((r) => console.log(r));
+}
+
+async function second() {
+  console.log(10);
+  await Promise.resolve(4).then((r) => console.log(r));
+  console.log(11);
+  await Promise.resolve(5).then((r) => console.log(r));
+}
+
+first();
+second();
+
+const promises = Promise.resolve("new Promise");
+promises.then((str) => console.log(str));
+// 9 10 2 4 new Promise 0 11 3 5
 
 
 // Практика от GPT
@@ -277,37 +277,37 @@
 // // A B D G E I J C F H
 
 // ----------------------4----------------------------
-console.log("1");
-
-async function test1() {
-  console.log("2");
-  await test2();
-  console.log("3");
-}
-
-async function test2() {
-  console.log("4");
-  await Promise.resolve();
-  console.log("5");
-}
-
-test1();
-
-setTimeout(() => {
-  console.log("6");
-}, 0);
-
-Promise.resolve().then(() => {
-  console.log("7");
-});
-
-queueMicrotask(() => {
-  console.log("8");
-});
-
-console.log("9");
-
-setTimeout(() => {
-  console.log("10");
-}, 0);
-// 1 2 4 9 5 7 8 3 6 10
+// console.log("1");
+//
+// async function test1() {
+//   console.log("2");
+//   await test2();
+//   console.log("3");
+// }
+//
+// async function test2() {
+//   console.log("4");
+//   await Promise.resolve();
+//   console.log("5");
+// }
+//
+// test1();
+//
+// setTimeout(() => {
+//   console.log("6");
+// }, 0);
+//
+// Promise.resolve().then(() => {
+//   console.log("7");
+// });
+//
+// queueMicrotask(() => {
+//   console.log("8");
+// });
+//
+// console.log("9");
+//
+// setTimeout(() => {
+//   console.log("10");
+// }, 0);
+// // 1 2 4 9 5 7 8 3 6 10
