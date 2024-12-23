@@ -266,31 +266,174 @@
 // И мы можем сохранить эту функцию в переменную и вызвать её позже.
 // Если бы startEngine была стрелочной функцией, то bind/call/apply не сработал бы, потому что стрелочная функция не создаёт своё лексическое окружение.
 // Контекст переопределяется только у обычных функций у стрелочных функций контекст не переопределяется и он навсегда остаётся таким, каким он был в момент инициализации.
+// А почему тогда в примере ниже не переопределяется контекст? Потому что мы используем bind, а bind создаёт новую функцию и в этой новой функции контекст будет привязан к объекту car2.
+
+// // --------1--------
+// const car1 = {
+//     brand: 'bmw',
+//     startEngine(color, speed) {
+//         console.log(`start ${this.brand} ${color} ${speed}`)
+//     }
+// }
+//
+// const car2 = {
+//     brand: 'kia',
+// }
+//
+// // car1.startEngine.call(car2, 'red', 200) // start kia red 200
+// // car1.startEngine.apply(car2, ['red', 200]) // start kia red 200
+//
+// // --------2--------
+// const scooter = {
+//     brand: 'honda',
+//     speed: 60,
+// }
+// console.dir(car1.startEngine) 
+// const foo = car1.startEngine.bind(car2, 'red', 100)
+// console.dir(foo) // есть скрытое поле [[BoundThis]]: brand: "kia", которое переопределить нельзя второй раз
+// foo.call(scooter)
+// foo('yellow', 100) 
+
+// // --------3--------
+// const scooter = {
+//     brand: 'honda',
+//     speed: 60,
+// }
+// const car2 ={
+//     brand: 'bmw',
+//     speed: 200,
+//     showMaxSpeed() {
+//         (
+//             () => {
+//                 console.log(this.speed) // 200 Почему? Потому что это стрелочная функция и она не создаёт своё лексическое окружение, поэтому this будет ссылаться на объект car2, а в объекте car2 есть свойство speed. То есть метод call ничего не будет делать? Потому что стрелочная функция не создаёт своё лексическое окружение, поэтому this будет ссылаться на объект car2, а в объекте car2 есть свойство speed
+//             }
+//         ).call(scooter) 
+//     }
+// }
+//
+// car2.showMaxSpeed()
+
+
+// --------4--------
+// =================Потеря контекста=================
+// Как происходит потеря контекста? Когда мы внутри setTimeout передаём функцию, то this будет ссылаться на объект window, а в объекте window нет свойства speed
+
+// // --------4.1--------
+// const car2 ={
+//     brand: 'bmw',
+//     speed: 200,
+//     showMaxSpeed() {
+//         // console.log(this) // window
+//         console.log(this.speed) // undefined
+//     }
+// }
+//
+// // function setTimeout(callback, timer) {
+// //     // logic ------------- sleep(2000)
+// //     callback() // слева от точки нет объекта, поэтому this === window
+// // }
+//
+// setTimeout(car2.showMaxSpeed, 2000) // undefined Почему? Потому что this === window
+//
+// // --------4.2--------
+// // Исправление потери контекста
+// // 1. Сделать стрелочную функцию и передать её в setTimeout
+// // 2. Использовать bind и передать в bind объект, к которому мы хотим привязать контекст, то есть car2.
+//
+// // bind возвращает новую функцию, в которой this будет привязан к указанному объекту.
+// setTimeout(car2.showMaxSpeed.bind(car2), 2000) // 200 Почему? Потому что мы используем bind и передаём в bind объект, к которому мы хотим привязать контекст, то есть car2. При этом call/apply не сработает, потому что они сразу вызывают функцию, а bind возвращает новую функцию, в которой this будет привязан к указанному объекту
+//
+// // стрелочная функция
+// setTimeout(() => car2.showMaxSpeed(), 2000) // 200 Почему? Потому что это стрелочная функция и она не создаёт своё лексическое окружение, поэтому this будет ссылаться на объект car2, а в объекте car2 есть свойство speed
+
+// --------4.3--------
+// const dialer = {
+//     name: 'Toyota',
+//     models: ['Yaris', 'Corolla', 'Prado'],
+//     showModelsInDialer() {
+//         // this === dialer
+//         this.models.forEach(function (model) {
+//             // this === window
+//             console.log(`Dialer: ${this.name}, have: ${model}`) // Dialer: undefined, have: Yaris...
+//         })
+//     },
+// }
+//
+// dialer.showModelsInDialer()
+
+// // arrow function
+// // Опять же можно исправить это с помощью стрелочной функции или bind
+// const dialer = {
+//     name: 'Toyota',
+//     models: ['Yaris', 'Corolla', 'Prado'],
+//     showModelsInDialer() {
+//         // this === dialer
+//         this.models.forEach( (model) => {
+//             // this === dialer
+//             console.log(`Dialer: ${this.name}, have: ${model}`) // Dialer: Toyota, have: Yaris...
+//         })
+//     },
+// }
+//
+// dialer.showModelsInDialer()
+
+// // bind
+// const dialer = {
+//     name: 'Toyota',
+//     models: ['Yaris', 'Corolla', 'Prado'],
+//     showModelsInDialer() {
+//         // this === dialer
+//         this.models.forEach(function(model) {
+//             console.log(`Dialer: ${this.name}, have: ${model}`)
+//         }.bind(this)); // Привязываем контекст this к функции
+//     },
+// }
+//
+// dialer.showModelsInDialer() // Dialer: Toyota, have: Yaris...
+
+// // 3ий параметр в forEach - это thisArg, который принимает контекст, который будет использоваться внутри функции.
+// const dialer = {
+//     name: 'Toyota',
+//     models: ['Yaris', 'Corolla', 'Prado'],
+//     showModelsInDialer() {
+//         // this === dialer
+//         this.models.forEach( (model) => {
+//             // this === dialer
+//             console.log(`Dialer: ${this.name}, have: ${model}`)
+//         }, this); // Привязываем контекст this
+//     },
+// }
+//
+// dialer.showModelsInDialer() // Dialer: Toyota, have: Yaris...
+
+
+//-------------------------------------------------------------------------------------------------
+// 4. Function constructor
 
 // --------1--------
-const car1 = {
-    brand: 'bmw',
-    startEngine(color, speed) {
-        console.log(`start ${this.brand} ${color} ${speed}`)
-    }
+// Функция-конструктор - это функция, которая создаёт объекты. 
+// То есть она становится функцией-конструктором, когда мы используем оператор new. 
+// Таким образом, функция-конструктор создаёт объекты.
+// Функция-конструктор - это обычная функция, которая создаёт объекты.
+// Принято называть функцию-конструктор с большой буквы.
+// Внутри функции-конструктора this будет ссылаться на объект, который создаётся в момент вызова функции-конструктора.
+// Функция-конструктор создаёт в памяти новый объект, а this ссылается на этот объект. А дальше через точку мы можем создавать свойства и методы для этого объекта.
+// Если мы не используем return, то this будет возвращаться автоматически.
+
+// function CarCreator(brand) {}
+// console.log(CarCreator()) // undefined
+// console.log(new CarCreator()) // CarCreator {}
+
+function CarCreator(brand) {
+    // {}
+    // this = {}
+    this.brand = brand
+    this.speed = 200
+    // {brand: 'kia', speed: 200}
+    // return this // автоматически возвращает this
 }
 
-const car2 = {
-    brand: 'kia',
-}
+console.log(new CarCreator('kia')) // CarCreator { brand: 'kia', speed: 200 }
+console.log(new CarCreator('bmw')) // CarCreator { brand: 'bmw', speed: 200 }
 
-// car1.startEngine.call(car2, 'red', 200) // start kia red 200
-// car1.startEngine.apply(car2, ['red', 200]) // start kia red 200
-
-// --------2--------
-// Три варианта передачи аргументов в bind
-// 2.1
-const foo1 = car1.startEngine.bind(car2, 'red', 100)
-foo1() // start kia red 100
-// 2.2
-const foo2 = car1.startEngine.bind(car2, 'red')
-foo2(100) // start kia red 100
-// 2.3
-const foo3 = car1.startEngine.bind(car2)
-foo3('red', 100) // start kia red 100
-
+console.log(CarCreator('bmw')) // undefined. В таком формате у window есть свойство brand со значением bmw, потому что this === window
