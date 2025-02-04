@@ -91,7 +91,7 @@
 // 5. Приватные свойства через _ условная договорённость
 // 6. Приватные свойства через #. К приватному свойству можно обращаться только внутри самого класса.
 // 7. Мы не работаем с приватными методами напрямую, а через методы get и set.
-// Мы контролируем приватные свойства от создания до изменения.
+// Мы контролируем полностью приватные свойства от создания до изменения.
 
 // // Равносильно вот такой записи-псевдокод ->
 // class Car {
@@ -105,45 +105,228 @@
 //     }
 // }
 
+// class Car {
+//     #wheels = 4 // Объявление приватного свойства
+//     constructor(brand, color, wheels) {
+//         this.brand = brand
+//         this.color = color
+//         // this._wheels = wheels // условная договорённость приватных свойств
+//         // this.#wheels = wheels
+//     }
+//
+//     getWheels() { // Получение приватного свойства
+//         return this.#wheels
+//     }
+//
+//     setWheels(wheels) { // Установка приватного свойства
+//         if (wheels > 10) throw new Error('wheels <= 10')
+//         this.#wheels = wheels
+//     }
+//
+//     startEngine() {
+//         console.log(`${this.brand} engine is started`)
+//     }
+// }
+//
+// const car1 = new Car('bwm', 'red')
+// const car2 = new Car('kia', 'black')
+//
+// console.log(car1)
+// console.log(car2)
+// console.log(car1.startEngine === car2.startEngine) // true
+// car1.startEngine() // методы помещаются в объект прототипа класса по умолчанию
+// car2.startEngine()
+//
+// // console.log(car1._wheels)
+// // console.log(car1.#wheels)
+// console.log(car1.getWheels()) // 4
+// car1.setWheels(6)
+//
+// console.log(car1.getWheels()) // 6
+// car1.setWheels(11) // Error wheels <= 10
+// // Time: 53:20
+
+
+// // Но так не делают (getWheels() и setWheels()), а через get и set работают (геттер и сеттер).
+// Называем методы get и set также, как и приватные свойства (wheels в нашем случае), чтобы не путаться.
+// Хотя по другому если назовём будет также всё работать.
+// class Car {
+//     #wheels = 4
+//     constructor(brand, color, wheels) {
+//         this.brand = brand
+//         this.color = color
+//     }
+//
+//     get wheels() {
+//         return this.#wheels
+//     }
+//
+//     set wheels(wheels) {
+//         if (wheels > 10) throw new Error('wheels <= 10')
+//         this.#wheels = wheels
+//     }
+//
+//     startEngine() {
+//         console.log(`${this.brand} engine is started`)
+//     }
+// }
+//
+// const car1 = new Car('bwm', 'red')
+// const car2 = new Car('kia', 'black')
+//
+// console.log(car1)
+// console.log(car2)
+// console.log(car1.startEngine === car2.startEngine)
+// car1.startEngine()
+// car2.startEngine()
+//
+// console.log(car1.wheels) // 4, просто вызываю свойство, а на самом деле инкапсулирована логика в get, которая возвращает это значение
+// car1.wheels = 6 // здесь js понимает, что раз мы приравниваем, то хотим выполнить set
+// console.log(car1.wheels) // 6
+
+
+// // Приватное свойство можно переопределить, если нет методов get и set
+// class Car {
+//     #wheels = 4
+//     constructor(brand, color, wheels) {
+//         this.brand = brand
+//         this.color = color
+//     }
+//
+//     get wheels() {
+//         return this.#wheels
+//     }
+//
+//     set wheels(wheels) {
+//         if (wheels > 10) throw new Error('wheels <= 10')
+//         this.#wheels = wheels
+//     }
+//
+//     startEngine() {
+//         console.log(`${this.brand} engine is started`)
+//     }
+// }
+//
+// const car1 = new Car('bwm', 'red')
+// const car2 = new Car('kia', 'black')
+//
+// console.log(car1)
+// console.log(car2)
+// console.log(car1.startEngine === car2.startEngine)
+// car1.startEngine()
+// car2.startEngine()
+//
+// car1.wheels = 15
+// console.log(car1)
+// // console.log(car1.wheels)
+// // car1.wheels = 6
+// // console.log(car1.wheels)
+
+
+// // Static methods - статические методы, можем сделать нашему классу (Car) и не будут доступны у instance (car1 и car2).
+// // Это нужно, чтобы какую-то логику привязать к классу, а не к конкретному экземпляру.
+// // Поэтому и в прототипе нет этого метода (compareCars), а есть get, set, приватное свойство и startEngine.
 class Car {
-    #wheels = 4 // Объявление приватного свойства
-    constructor(brand, color, wheels) {
+    #wheels = 4
+    constructor(brand, color, maxSpeed) {
         this.brand = brand
         this.color = color
-        // this._wheels = wheels // условная договорённость приватных свойств
-        // this.#wheels = wheels
+        this.maxSpeed = maxSpeed
     }
 
-    getWheels() { // Получение приватного свойства
+    get wheels() {
         return this.#wheels
     }
 
-    setWheels(wheels) { // Установка приватного свойства
+    set wheels(wheels) {
         if (wheels > 10) throw new Error('wheels <= 10')
         this.#wheels = wheels
     }
 
-
-
     startEngine() {
         console.log(`${this.brand} engine is started`)
     }
+
+    static compareCars() {
+        car1.maxSpeed === car2.maxSpeed
+            ? console.log(`Cars have same speed`)
+            : car1.maxSpeed > car2.maxSpeed
+                ? console.log(`${car1.brand} is faster`)
+                : console.log(`${car2.brand} is faster`);
+    }
 }
 
-const car1 = new Car('bwm', 'red')
-const car2 = new Car('kia', 'black')
+const car1 = new Car('bwm', 'red', 200)
+const car2 = new Car('kia', 'black', 180)
 
-console.log(car1)
-console.log(car2)
-console.log(car1.startEngine === car2.startEngine) // true
-car1.startEngine() // методы помещаются в объект прототипа класса по умолчанию
-car2.startEngine()
 
-// console.log(car1._wheels)
-// console.log(car1.#wheels)
-console.log(car1.getWheels()) // 4
-car1.setWheels(6)
+Car.compareCars(car1, car2) // bwm is faster
+// console.log(car1.compareCars()) // TypeError: car1.compareCars is not a function
+// console.log(car2)
+// console.log(car1.startEngine === car2.startEngine)
+// car1.startEngine()
+// car2.startEngine()
+//
+// car1.wheels = 15
+// console.log(car1)
 
-console.log(car1.getWheels()) // 6
-car1.setWheels(11) // Error wheels <= 10
-// Time: 53:20
+// Наследование
+// Классы дают нам возможность наследовать свойства и методы от родительского класса.
+// Также чтобы не дублировать код в разных классах, мы можем использовать extends.
+// То есть создать копию класса, которая будет наследоваться от родительского класса, но с дополнительным функционалом.
+// extends идёт всегда в паре с super
+
+// class SuperCar extends Car {
+//     constructor(brand, color, maxSpeed, isFly) { // функция конструктор конструирует в памяти новый объект и записывает его в this
+//         // new Car(brand, color, maxSpeed) - под капотом идёт в super() - создание экземпляра родительского класса Car внутри конструктора SuperCar.
+//         super(brand, color, maxSpeed); // вызываем конструктор родительского класса, то есть наследуем свойства и методы
+//         this.isFly = isFly // добавляем новое свойство
+//         this.brand = brand + '-X5' // так мы перезатрём свойство brand родительского класса
+//     }
+//
+//     fly() { // добавили новый метод класса SuperCar
+//         console.log(`${this.brand} is flying`)
+//     }
+//
+//     startEngine() { // переопределили метод startEngine, точнее добавили новый функционал в SuperCar, а в Car он остался прежним
+//         super.startEngine() // выполняется старая логика из родительского класса Car
+//         console.log(`${this.brand} in new start engine is function`) // и потом новая логика
+//     }
+// }
+//
+// // SuperCar.compareCars() // доступны статические методы родительского класса
+//
+// const superBmw = new SuperCar('super-bmw', 'green', 220, true)
+//
+// console.log(superBmw) // SuperCar { brand: 'super-bmw', color: 'green', maxSpeed: 220, isFly: true }
+// // console.log(superBmw.wheels) // 4 - из родительского класса доступен метод get
+// // superBmw.fly() // super-bmw is flying
+// // superBmw.startEngine() // super-bmw in new start engine is function
+// // car1.startEngine() // bwm engine is started
+//
+// // car1.startEngine()
+// superBmw.startEngine()
+// // super-bmw engine is started
+// // super-bmw in new start engine is function
+
+
+// Момент с вопросом где же создаётся новый объект в конструкторе Car, в конструкторе SuperCar или может быть создаётся 2 объекта вообще? 🙃
+class SuperCar extends Car {
+    constructor(brand, color, maxSpeed, isFly) {
+        // ✅
+        // {} - вот здесь создаётся новый объект в классе SuperCar
+        // this = {}
+        super(brand, color, maxSpeed);
+        this.isFly = isFly
+    }
+
+    fly() { // добавили новый метод класса SuperCar
+        console.log(`${this.brand} is flying`)
+    }
+
+    startEngine() { // переопределили метод startEngine, точнее добавили новый функционал в SuperCar, а в Car он остался прежним
+        super.startEngine() // выполняется старая логика из родительского класса Car
+        console.log(`${this.brand} in new start engine is function`) // и потом новая логика
+    }
+}
+// Time: 1:22:59
