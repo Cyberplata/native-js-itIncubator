@@ -226,41 +226,41 @@
 // // Static methods - статические методы, можем сделать нашему классу (Car) и не будут доступны у instance (car1 и car2).
 // // Это нужно, чтобы какую-то логику привязать к классу, а не к конкретному экземпляру.
 // // Поэтому и в прототипе нет этого метода (compareCars), а есть get, set, приватное свойство и startEngine.
-class Car {
-    #wheels = 4
-    constructor(brand, color, maxSpeed) {
-        this.brand = brand
-        this.color = color
-        this.maxSpeed = maxSpeed
-    }
-
-    get wheels() {
-        return this.#wheels
-    }
-
-    set wheels(wheels) {
-        if (wheels > 10) throw new Error('wheels <= 10')
-        this.#wheels = wheels
-    }
-
-    startEngine() {
-        console.log(`${this.brand} engine is started`)
-    }
-
-    static compareCars() {
-        car1.maxSpeed === car2.maxSpeed
-            ? console.log(`Cars have same speed`)
-            : car1.maxSpeed > car2.maxSpeed
-                ? console.log(`${car1.brand} is faster`)
-                : console.log(`${car2.brand} is faster`);
-    }
-}
-
-const car1 = new Car('bwm', 'red', 200)
-const car2 = new Car('kia', 'black', 180)
-
-
-Car.compareCars(car1, car2) // bwm is faster
+// class Car {
+//     #wheels = 4
+//     constructor(brand, color, maxSpeed) {
+//         this.brand = brand
+//         this.color = color
+//         this.maxSpeed = maxSpeed
+//     }
+//
+//     get wheels() {
+//         return this.#wheels
+//     }
+//
+//     set wheels(wheels) {
+//         if (wheels > 10) throw new Error('wheels <= 10')
+//         this.#wheels = wheels
+//     }
+//
+//     startEngine() {
+//         console.log(`${this.brand} engine is started`)
+//     }
+//
+//     static compareCars() {
+//         car1.maxSpeed === car2.maxSpeed
+//             ? console.log(`Cars have same speed`)
+//             : car1.maxSpeed > car2.maxSpeed
+//                 ? console.log(`${car1.brand} is faster`)
+//                 : console.log(`${car2.brand} is faster`);
+//     }
+// }
+//
+// const car1 = new Car('bwm', 'red', 200)
+// const car2 = new Car('kia', 'black', 180)
+//
+//
+// Car.compareCars(car1, car2) // bwm is faster
 // console.log(car1.compareCars()) // TypeError: car1.compareCars is not a function
 // console.log(car2)
 // console.log(car1.startEngine === car2.startEngine)
@@ -310,23 +310,43 @@ Car.compareCars(car1, car2) // bwm is faster
 // // super-bmw in new start engine is function
 
 
-// Момент с вопросом где же создаётся новый объект в конструкторе Car, в конструкторе SuperCar или может быть создаётся 2 объекта вообще? 🙃
-class SuperCar extends Car {
-    constructor(brand, color, maxSpeed, isFly) {
-        // ✅
-        // {} - вот здесь создаётся новый объект в классе SuperCar
-        // this = {}
-        super(brand, color, maxSpeed);
-        this.isFly = isFly
-    }
-
-    fly() { // добавили новый метод класса SuperCar
-        console.log(`${this.brand} is flying`)
-    }
-
-    startEngine() { // переопределили метод startEngine, точнее добавили новый функционал в SuperCar, а в Car он остался прежним
-        super.startEngine() // выполняется старая логика из родительского класса Car
-        console.log(`${this.brand} in new start engine is function`) // и потом новая логика
-    }
-}
+// // Момент с вопросом где же создаётся новый объект в конструкторе Car, в конструкторе SuperCar или может быть создаётся 2 объекта вообще? 🙃
+// class SuperCar extends Car {
+//     constructor(brand, color, maxSpeed, isFly) {
+//         // ✅
+//         // {} - вот здесь создаётся новый объект в классе SuperCar
+//         // this = {}
+//         super(brand, color, maxSpeed);
+//         this.isFly = isFly
+//     }
+//
+//     fly() { // добавили новый метод класса SuperCar
+//         console.log(`${this.brand} is flying`)
+//     }
+//
+//     startEngine() { // переопределили метод startEngine, точнее добавили новый функционал в SuperCar, а в Car он остался прежним
+//         super.startEngine() // выполняется старая логика из родительского класса Car
+//         console.log(`${this.brand} in new start engine is function`) // и потом новая логика
+//     }
+// }
 // Time: 1:22:59
+
+
+// Задача посчитать общее количество машин в class, решение через static свойство →
+class Car {
+    // #wheels = 4
+    constructor(brand, color, maxSpeed) {
+        Car.value++
+        // this.brand = brand
+        // this.color = color
+        // this.maxSpeed = maxSpeed
+    }
+
+    static value = 0
+}
+
+const car1 = new Car('bwm', 'red', 200)
+const car2 = new Car('kia', 'black', 180)
+const car3 = new Car('ford', 'green', 250)
+
+console.log(Car.value) // 3
