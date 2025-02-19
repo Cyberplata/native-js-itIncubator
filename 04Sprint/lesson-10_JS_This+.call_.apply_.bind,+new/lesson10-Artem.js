@@ -1,3 +1,24 @@
+// *******************************Алексей Вергей*********************************************************
+// https://www.youtube.com/watch?v=8ASji0hy11Y - урок с Алексеем Вергеем
+// Ключевые моменты по this
+
+//!use-strict ---> this = some object
+//use-strict -----> this = any data type
+
+
+//1. global scope -----> this = global object
+
+//2. function (not arrow!!!!) ---> смотрим как вызывается функция!!! ---> приоритет по убыванию следующий --->
+    // - вызвана с помощью ключевого слова new ----> this = {} (новый объект)
+    // - вызвана с помощью методов функций ( call, bind, apply )
+    // - вызвана от имени какого-то объекта ----> this то, что слева от точки
+    // - обычный вызов функции ----> undefined (!use-strict ---> window)
+
+//3. arrow functions ---> this берётся из внешнего скоупа
+
+// *******************************Алексей Вергей*********************************************************
+
+
 // this
 // Что такое this - это ключевое слово, которое ссылается на объект, в контексте которого вызывается функция.
 // Для function declaration this определяется в момент вызова функции, то есть где и когда функция вызывается.
@@ -7,7 +28,6 @@
 // 2. Function scope -> arrow function || simple function
 // 3. call / apply / bind
 // 4. Function constructor
-
 
 //-------------------------------------------------------------------------------------------------
 // // 1. Global scope
@@ -23,7 +43,7 @@
 // "use strict"; // строгий режим это режим, в котором this не будет ссылаться на window, если функция вызывается в глобальной области видимости. А также запрещает использование некоторых синтаксических конструкций, которые могут привести к ошибкам. Нужно использовать при каких условиях? При написании кода, чтобы избежать ошибок, которые могут возникнуть из-за неявных ошибок в коде.
 
 // // 2.1 arrow function
-// // будет ссылаться на window
+// будет ссылаться на window
 // const arrowFunc = () => { // момент инициализации
 //     // no this
 //     console.log(this); // window
@@ -38,14 +58,14 @@
 //     const arrowFunc = () => {
 //         console.log(this); // window или undefined (при строгом режиме)
 //     }
-//    
+//
 //     arrowFunc()
 // }
 //
 // // window.foo()
 // foo() // this появляется в момент вызова функции - неявно вызывается window.foo() при не строгом режиме и undefined.foo() при строгом режиме
 
-// 2.3 arrow function
+// // 2.3 arrow function
 // const user = {
 //     firstName: "Artem",
 //     showName: () => {
@@ -54,7 +74,7 @@
 //     }
 // }
 
-// 2.4 simple function
+// // 2.4 simple function
 // const user = {
 //     firstName: "Artem",
 //     showName() {
@@ -63,7 +83,7 @@
 // }
 // user.showName() // Так как это обычная функция, то смотрим что левее от точки - это объект user, поэтому this будет ссылаться на объект user и выведет Artem
 
-// 2.5 arrow function in simple function
+// // 2.5 arrow function in simple function
 // const user = {
 //     firstName: "Artem",
 //     showName() {
@@ -77,7 +97,7 @@
 //
 // user.showName() // инициализация функции foo происходит внутри функции showName, а она вызывается в контексте объекта user, поэтому this будет ссылаться на объект user и выведет Artem
 
-// 2.6 simple function in simple function
+// // 2.6 simple function in simple function
 // const user = {
 //     firstName: "Artem",
 //     showName() {
@@ -92,8 +112,8 @@
 //
 // user.showName()
 
-// 2.7 example with var
-// // у var нет блочной области видимости у неё есть функциональная область видимости, 
+// // 2.7 example with var
+// // у var нет блочной области видимости у неё есть функциональная область видимости,
 // // а let и const есть блочная область видимости и они не поднимаются в начало блока, в отличие от var.
 // // Поэтому это глобальная переменная и она будет в объекте window с таким же именем и значением 20
 // var maxSpeed= 20;
@@ -101,8 +121,8 @@
 // const car = {
 //     maxSpeed: 200,
 //     showMaxSpeed: () => {
-//         console.log(this.maxSpeed) // 20 почему? 
-//         // потому что это стрелочная функция и она не создаёт своё лексическое окружение, 
+//         console.log(this.maxSpeed) // 20 почему?
+//         // потому что это стрелочная функция и она не создаёт своё лексическое окружение,
 //         // поэтому this будет ссылаться на объект window, а в объекте window есть свойство maxSpeed со значением 20
 //     }
 // }
@@ -114,8 +134,8 @@
 // const car = {
 //     maxSpeed: 200,
 //     showMaxSpeed() {
-//         console.log(this.maxSpeed) // 200 почему? 
-//         // Потому что это обычная функция и она создаёт своё лексическое окружение, 
+//         console.log(this.maxSpeed) // 200 почему?
+//         // Потому что это обычная функция и она создаёт своё лексическое окружение,
 //         // а this будет ссылаться на объект car, а в объекте car есть свойство maxSpeed со значением 200
 //     }
 // }
@@ -134,7 +154,7 @@
 //     brand: 'bmw',
 //     startEngine() {
 //         // console.log(`start ${this.brand}`) // start bmw
-//         console.log(`start ${car.brand}`) // start bmw. Зачем же тогда нужен этот this раз мы можем сделать вот так? 
+//         console.log(`start ${car.brand}`) // start bmw. Зачем же тогда нужен этот this раз мы можем сделать вот так?
 //     }
 // }
 //
@@ -182,7 +202,7 @@
 // car1.func() // start undefined? Почему? Потому что это стрелочная функция и она не создаёт своё лексическое окружение, поэтому this будет ссылаться на объект window, а в объекте window нет свойства brand
 // car2.func() // start undefined
 
-// ----IV----
+// // ----IV----
 // const car = {
 //     color: "red",
 //     showColor() {
@@ -191,9 +211,9 @@
 //                 console.log(this.color) // red
 //             }
 //         )() // что это за синтаксис? Это самовызывающаяся функция.
-//         Ключевое, что это стрелочная функцию и она получает this в момент инициализации,
-//         а инициализация происходит внутри метода showColor, а метод showColor вызывается в контексте объекта car,
-//         поэтому this будет ссылаться на объект car, а в объекте car есть свойство color
+//         // Ключевое, что это стрелочная функцию и она получает this в момент инициализации,
+//         // а инициализация происходит внутри метода showColor, а метод showColor вызывается в контексте объекта car,
+//         // поэтому this будет ссылаться на объект car, а в объекте car есть свойство color
 //     }
 // }
 //
@@ -217,7 +237,7 @@
 //
 // car.showColor()
 
-// // ----VI----
+// ----VI----
 // const car = {
 //     color: "red",
 //     showColor() {
@@ -279,20 +299,20 @@
 // const car2 = {
 //     brand: 'kia',
 // }
-//
+// //
 // // car1.startEngine.call(car2, 'red', 200) // start kia red 200
 // // car1.startEngine.apply(car2, ['red', 200]) // start kia red 200
 //
-// // --------2--------
+// // // --------2--------
 // const scooter = {
 //     brand: 'honda',
 //     speed: 60,
 // }
-// console.dir(car1.startEngine) 
+// console.dir(car1.startEngine)
 // const foo = car1.startEngine.bind(car2, 'red', 100)
 // console.dir(foo) // есть скрытое поле [[BoundThis]]: brand: "kia", которое переопределить нельзя второй раз
 // foo.call(scooter)
-// foo('yellow', 100) 
+// foo('yellow', 100)
 
 // // --------3--------
 // const scooter = {
@@ -307,7 +327,7 @@
 //             () => {
 //                 console.log(this.speed) // 200 Почему? Потому что это стрелочная функция и она не создаёт своё лексическое окружение, поэтому this будет ссылаться на объект car2, а в объекте car2 есть свойство speed. То есть метод call ничего не будет делать? Потому что стрелочная функция не создаёт своё лексическое окружение, поэтому this будет ссылаться на объект car2, а в объекте car2 есть свойство speed
 //             }
-//         ).call(scooter) 
+//         ).call(scooter)
 //     }
 // }
 //
@@ -361,8 +381,8 @@
 //
 // dialer.showModelsInDialer()
 
-// // arrow function
-// // Опять же можно исправить это с помощью стрелочной функции или bind
+// arrow function
+// Опять же можно исправить это с помощью стрелочной функции или bind
 // const dialer = {
 //     name: 'Toyota',
 //     models: ['Yaris', 'Corolla', 'Prado'],
@@ -424,16 +444,16 @@
 // console.log(CarCreator()) // undefined
 // console.log(new CarCreator()) // CarCreator {}
 
-function CarCreator(brand) {
-    // {}
-    // this = {}
-    this.brand = brand
-    this.speed = 200
-    // {brand: 'kia', speed: 200}
-    // return this // автоматически возвращает this
-}
-
-console.log(new CarCreator('kia')) // CarCreator { brand: 'kia', speed: 200 }
-console.log(new CarCreator('bmw')) // CarCreator { brand: 'bmw', speed: 200 }
-
-console.log(CarCreator('bmw')) // undefined. В таком формате у window есть свойство brand со значением bmw, потому что this === window
+// function CarCreator(brand) {
+//     // {}
+//     // this = {}
+//     this.brand = brand
+//     this.speed = 200
+//     // {brand: 'kia', speed: 200}
+//     // return this // автоматически возвращает this
+// }
+//
+// console.log(new CarCreator('kia')) // CarCreator { brand: 'kia', speed: 200 }
+// console.log(new CarCreator('bmw')) // CarCreator { brand: 'bmw', speed: 200 }
+//
+// console.log(CarCreator('bmw')) // undefined. В таком формате у window есть свойство brand со значением bmw, потому что this === window
