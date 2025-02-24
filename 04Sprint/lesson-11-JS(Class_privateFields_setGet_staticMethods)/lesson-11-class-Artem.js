@@ -333,20 +333,20 @@
 
 
 // Задача посчитать общее количество машин в class, решение через static свойство →
-class Car {
-    // #wheels = 4
-    constructor(brand, color, maxSpeed) {
-        Car.value++
-        // this.brand = brand
-        // this.color = color
-        // this.maxSpeed = maxSpeed
-    }
-
-    static value = 0
-}
-
-const car1 = new Car('bwm', 'red', 200)
-const car2 = new Car('kia', 'black', 180)
-const car3 = new Car('ford', 'green', 250)
-
-console.log(Car.value) // 3
+// class Car {
+//     // #wheels = 4
+//     constructor(brand, color, maxSpeed) {
+//         Car.value++
+//         // this.brand = brand
+//         // this.color = color
+//         // this.maxSpeed = maxSpeed
+//     }
+//
+//     static value = 0
+// }
+//
+// const car1 = new Car('bwm', 'red', 200)
+// const car2 = new Car('kia', 'black', 180)
+// const car3 = new Car('ford', 'green', 250)
+//
+// console.log(Car.value) // 3
