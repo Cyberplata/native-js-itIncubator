@@ -137,7 +137,7 @@ class Car {
         console.log(`Start ${this.brand}`)
     }
 
-    static compareCars() {
+    static compareCars(car1, car2) { // статический метод - метод, который принадлежит классу, а не инстансу. Зачем? - чтобы не создавать новые инстансы объекта
         car1.speed > car2.speed
             ? console.log(`${car1.brand} is faster than ${car2.brand}`)
             : console.log(`${car2.brand} is faster than ${car1.brand}`);
@@ -148,13 +148,21 @@ class Car {
 // const car2 = new Car("bmw", 200)
 
 class SuperCar extends Car {
-    constructor(brand, speed, color) { // конструктор класса, который наследуется он уже не создаёт новые инстансы объекта и для того чтобы создать новый инстанс объекта нужно вызвать super()
-        super(); // Что делает? - вызывает конструктор родителя
+    constructor(brand, speed, color, canFly) { // конструктор класса, который наследуется он уже не создаёт новые инстансы объекта и для того чтобы создать новый инстанс объекта нужно вызвать super()
+        super(brand, speed); // Что делает? - вызывает конструктор родителя
+        this.canFly = canFly;
+    }
+    fly() {
+        console.log(`Fly ${this.canFly}`)
     }
 }
 
-const superCar1 = new SuperCar("bmw", 300, "red")
-const superCar2 = new SuperCar("kia", 320, "blue")
+const superCar11 = new SuperCar("superBmw", 400, "red", true)
+const superCar22 = new SuperCar("superKia", 420, "blue", true)
+
+// superCar11.fly() // Fly true
+SuperCar.compareCars(superCar11, superCar22) // superKia is faster than superBmw ✅ - статический метод
+
 
 
 // Функция конструктор
@@ -176,10 +184,46 @@ CarCreator.compareCars = function (car1, car2) { // ✅ - создаётся о�
         : console.log(`${car2.brand} is faster than ${car1.brand}`);
 }
 
-const car1 = new CarCreator("bmw", 200)
-const car2 = new CarCreator("kia", 220)
+function SuperCarCreator(brand, speed, canFly) {
+    // {} - создаётся пустой объект и он записывается в this
+    // функция конструктор создаёт свой this и мы имеем к нему доступ
 
-car1.startEngine() // Start bmw
-car2.startEngine() // Start kia
+    // this.brand = brand // как сделать так, чтобы не переписывать эти 2 строки? ❌
+    // this.speed = speed
 
-CarCreator.compareCars(car1, car2) // kia is faster than bmw
+    CarCreator.call(this, brand, speed) // ✅ - вызывает конструктор родителя
+    this.canFly = canFly
+}
+
+SuperCarCreator.prototype.fly = function () {
+    console.log(`Fly ${this.canFly}`)
+}
+
+const superCar1 = new SuperCarCreator("superBmw", 400, true)
+const superCar2 = new SuperCarCreator("superKia", 420, true)
+
+SuperCarCreator.prototype.__proto__ = CarCreator.prototype // ✅ - наследование прототипа, ❌ - устаревший синтаксис
+SuperCarCreator.__proto__ = CarCreator // ✅ - наследование статического метода, ❌ - устаревший синтаксис
+
+superCar1.startEngine() // Start superBmw ✅
+SuperCarCreator.compareCars(superCar1, superCar2) // superKia is faster than superBmw ✅ - статический метод
+// superCar1.fly() // Fly true ✅
+
+// Новый синтаксис наследования прототипа ✅✅✅👌👌👌
+// Но синтаксис через SuperCarCreator.prototype.__proto__ = CarCreator.prototype /
+// SuperCarCreator.__proto__ = CarCreator устарел и его не рекомендуется использовать.
+// Лучше использовать Object.setPrototypeOf(SuperCarCreator.prototype, CarCreator)
+// Первым параметром передаём объект, который хотим изменить, вторым - объект, который хотим использовать в качестве прототипа
+Object.setPrototypeOf(SuperCarCreator.prototype, CarCreator.prototype) // ✅👌 - наследование прототипа
+Object.setPrototypeOf(SuperCarCreator.prototype, CarCreator) // ✅👌 - наследование статического метода
+
+// const superCar2 = new superCar1.__proto__.constructor("superKia", 420, true)
+// console.log(superCar2) // SuperCarCreator { brand: 'superKia', speed: 420, canFly: true }
+
+// const car1 = new CarCreator("bmw", 200)
+// const car2 = new CarCreator("kia", 220)
+//
+// car1.startEngine() // Start bmw
+// car2.startEngine() // Start kia
+//
+// CarCreator.compareCars(car1, car2) // kia is faster than bmw
